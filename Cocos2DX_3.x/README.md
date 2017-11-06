@@ -1,5 +1,9 @@
 # DragonBones Cocos2d-x Library
 
+<p align="center">
+<h2 align="center">English         <a href="Readme-zh_CN.md">中文版</a></h2>
+</p>
+
 ## [Demos](./Demos/)
 
 ## How to use
@@ -12,7 +16,8 @@
 ## Notice
 * In Xcode: Add Files To "project" > Options > Added folders: Create groups > Add to targets: "all"
 * Use [rapidjson/msinttypes](../3rdParty/rapidjson/msinttypes) headers only with Microsoft Visual C++ compilers.
-* If compiler can not find headers, add Classes to project Header Search Paths, maker sure project structure like this:
+* Cocos2dx also include rapidjson, if you use the cocos2dx related json function, make sure only include rapidjson once time.
+* If compiler can not find headers, add Classes to project Header Search Paths, make sure project structure like this:
 ```
 Classes (Include Path)
     |-- rapidjson

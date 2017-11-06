@@ -1,10 +1,11 @@
-﻿#include "AppDelegate.h"
+#include "AppDelegate.h"
 
 #include "HelloDragonBones.h"
+#include "ReplaceSlotDisplay.h"
+#include "CoreElement.h"
 #include "PerformanceTest.h"
 #include "AnimationBaseTest.h"
-#include "Knight.h"
-#include "CoreElement.h"
+#include "DragonBonesTest.h"
 
 USING_NS_CC;
 
@@ -32,11 +33,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("DragonBonesCPP", Rect(0, 0, 960, 640));
+        glview = GLViewImpl::createWithRect("DragonBones", cocos2d::Rect(0, 0, 1136, 640));
         director->setOpenGLView(glview);
     }
 
-    director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::SHOW_ALL);
+    director->getOpenGLView()->setDesignResolutionSize(1136, 640, ResolutionPolicy::SHOW_ALL);
 
     // turn on display FPS
     director->setDisplayStats(true);
@@ -44,14 +45,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.f / 60.f);
 
-    FileUtils::getInstance()->addSearchPath("res");
+    FileUtils::getInstance()->addSearchPath("assets");
+    FileUtils::getInstance()->addSearchPath("temp");
 
     // create a scene. it's an autorelease object
-    //auto scene = HelloDragonBones::createScene();
-    //auto scene = PerformanceTest::createScene();
-    //auto scene = AnimationBaseTest::createScene();
-    //auto scene = KnightGame::createScene();
+    // auto scene = HelloDragonBones::createScene();
+    // auto scene = ReplaceSlotDisplay::createScene();
     auto scene = CoreElementGame::createScene();
+
+    // auto scene = PerformanceTest::createScene();
+    // auto scene = AnimationBaseTest::createScene();
+    // auto scene = DragonBonesTest::createScene();
 
     // run
     director->runWithScene(scene);

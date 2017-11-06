@@ -1,37 +1,57 @@
-#ifndef __HELLO_DRAGONBONES_H__
-#define __HELLO_DRAGONBONES_H__
+#ifndef HELLO_DRAGONBONES_H
+#define HELLO_DRAGONBONES_H
 
 #include "cocos2d.h"
 #include "dragonBones/cocos2dx/CCDragonBonesHeaders.h"
-
+/**
+ * How to use
+ * 1. Load data.
+ *    factory.loadDragonBonesData();
+ *    factory.loadTextureAtlasData();
+ *
+ * 2. Build armature.
+ *    armatureDisplay = factory.buildArmatureDisplay("armatureName");
+ *
+ * 3. Play animation.
+ *    armatureDisplay->getAnimation()->play("animationName");
+ *
+ * 4. Add armature to stage.
+ *    addChild(armatureDisplay);
+ */
 class HelloDragonBones : public cocos2d::LayerColor
 {
 public:
-    static cocos2d::Scene* createScene();
-
-    virtual bool init();
-
     CREATE_FUNC(HelloDragonBones);
+    static cocos2d::Scene* createScene()
+    {
+        auto scene = cocos2d::Scene::create();
+        auto layer = HelloDragonBones::create();
 
-private:
-    bool _isMoved;
-    float _prevArmatureScale;
-    float _armatureScale;
-    cocos2d::Vec2 _startPoint;
+        scene->addChild(layer);
+        return scene;
+    }
 
-    unsigned _armatureIndex;
-    unsigned _animationIndex;
-    dragonBones::DragonBonesData* _dragonBonesData;
-    dragonBones::Armature* _armature;
-    dragonBones::CCArmatureDisplay* _armatureDisplay;
-    dragonBones::CCFactory _factory;
+    virtual bool init()
+    {
+        if (!LayerColor::initWithColor(cocos2d::Color4B(105, 105, 105, 255)))
+        {
+            return false;
+        }
 
-    void _changeArmature();
-    void _changeAnimation();
+        const auto& stageSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-    bool _touchBeganHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
-    void _touchEndedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
-    void _touchMovedHandler(const cocos2d::Touch* touch, cocos2d::Event* event);
+        const auto factory = dragonBones::CCFactory::getFactory();
+        factory->loadDragonBonesData("dragon_boy_ske.json");
+        // factory->loadDragonBonesData("dragon_boy_ske.dbbin");
+        factory->loadTextureAtlasData("dragon_boy_tex.json");
+        const auto armatureDisplay = factory->buildArmatureDisplay("DragonBoy");
+        armatureDisplay->getAnimation()->play("walk");
+
+        addChild(armatureDisplay);
+        armatureDisplay->setPosition(stageSize.width * 0.5f, stageSize.height * 0.5f);
+
+        return true;
+    }
 };
 
-#endif // __HELLO_DRAGONBONES_H__
+#endif // HELLO_DRAGONBONES_H

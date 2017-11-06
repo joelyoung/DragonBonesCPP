@@ -5,8 +5,8 @@ DRAGONBONES_NAMESPACE_BEGIN
 CCArmatureDisplay* CCArmatureDisplay::create()
 {
     CCArmatureDisplay* displayContainer = new (std::nothrow) CCArmatureDisplay();
-
     if (displayContainer && displayContainer->init())
+    if (displayContainer)
     {
         displayContainer->autorelease();
     }
@@ -18,74 +18,63 @@ CCArmatureDisplay* CCArmatureDisplay::create()
     return displayContainer;
 }
 
-CCArmatureDisplay::CCArmatureDisplay() :
-    _armature(nullptr),
-    _dispatcher(nullptr),
-    _eventCallback(nullptr)
+void CCArmatureDisplay::dbInit(Armature* armature)
 {
-    _dispatcher = new cocos2d::EventDispatcher();
-    this->setEventDispatcher(_dispatcher);
-    _dispatcher->setEnabled(true);
+    _armature = armature;
 }
-CCArmatureDisplay::~CCArmatureDisplay() {}
 
-void CCArmatureDisplay::_onClear()
+void CCArmatureDisplay::dbClear()
 {
-    this->setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
+    setEventDispatcher(cocos2d::Director::getInstance()->getEventDispatcher());
 
     _armature = nullptr;
     CC_SAFE_RELEASE(_dispatcher);
     this->release();
 }
 
-void CCArmatureDisplay::_dispatchEvent(EventObject* value)
+void CCArmatureDisplay::dispose(bool disposeProxy)
 {
-    if (_eventCallback) {
-        _eventCallback(value);
-    }
-    
-    if (_dispatcher->isEnabled()) {
-        _dispatcher->dispatchCustomEvent(value->type, value);
-    }
-}
-
-void CCArmatureDisplay::dispose()
-{
-    if (_armature) 
+    if (_armature != nullptr) 
     {
-        advanceTimeBySelf(false);
         _armature->dispose();
         _armature = nullptr;
     }
 }
 
-void CCArmatureDisplay::update(float passedTime)
+void CCArmatureDisplay::dbUpdate()
 {
-    _armature->advanceTime(passedTime);
+    const auto drawed = DragonBones::debugDraw;
+    if (drawed || _debugDraw) 
+    {
+        _debugDraw = drawed;
+        if (_debugDraw) 
+        {
+
+        }
+        else 
+        {
+            // TODO
+        }
+    }
 }
 
-void CCArmatureDisplay::advanceTimeBySelf(bool on)
+void CCArmatureDisplay::_dispatchEvent(const std::string& type, EventObject* value)
 {
-    if (on)
-    {
-        scheduleUpdate();
-    }
-    else 
-    {
-        unscheduleUpdate();
-    }
+    _dispatcher->dispatchCustomEvent(type, value);
 }
 
 void CCArmatureDisplay::addEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
-    auto lambda = [callback](cocos2d::EventCustom* event) -> void {
+    auto lambda = [callback](cocos2d::EventCustom* event) -> void 
+    {
         callback(static_cast<EventObject*>(event->getUserData()));
     };
     _dispatcher->addCustomEventListener(type, lambda);
 }
 
-void CCArmatureDisplay::removeEvent(const std::string& type)
+void CCArmatureDisplay::removeEvent(const std::string& type, const std::function<void(EventObject*)>& callback)
 {
+    // TODO
     _dispatcher->removeCustomEventListeners(type);
 }
 
@@ -104,11 +93,6 @@ DBCCSprite* DBCCSprite::create()
 
     return sprite;
 }
-
-DBCCSprite::DBCCSprite()
-{
-}
-DBCCSprite::~DBCCSprite() {}
 
 bool DBCCSprite::_checkVisibility(const cocos2d::Mat4& transform, const cocos2d::Size& size, const cocos2d::Rect& rect)
 {
@@ -198,11 +182,5 @@ cocos2d::PolygonInfo& DBCCSprite::getPolygonInfoModify()
 {
     return this->_polyInfo;
 }
-
-#if COCOS2D_VERSION >= 0x00031400
-void DBCCSprite::setRenderMode(RenderMode m) {
-    _renderMode = m;
-}
-#endif
 
 DRAGONBONES_NAMESPACE_END

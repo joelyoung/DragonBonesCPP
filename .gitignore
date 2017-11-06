@@ -41,8 +41,10 @@ libs/
 bin/
 obj/
 gen/
-assets/
 local.properties
+
+.idea/
+CMakeFiles/
 
 # Ignore python compiled files
 *.pyc
@@ -91,3 +93,11 @@ tags
 
 # ignore engines
 engines/
+
+# ignore cocos2d
+Cocos2DX_3.x/Demos/cocos2d
+Cocos2DX_3.x/Demos/proj.ios_mac
+Cocos2DX_3.x/Demos/bin
+
+# ignore egret
+egret
